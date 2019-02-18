@@ -1,24 +1,12 @@
-# need someone to automate this process: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/raid-config.html
-#Give me a Python boto3 script which I can run with 3 parameters, e.g.:
+# Usage:
+#
+# aws-ec2-raid.py <count> <size> <mountpoint>
+#
+# Where :
+#    <count> is the number of EBS volumes to be created and configured in RAID0 mode.
+#    <size> is the size in GB of each volume
+#    <mountpoint> is the path for the mount in the local fs, e.g. /mnt or /data
 
-#setup_raid.py <count> <size> <mountpoint>
-#Where :
-#<count> is the number of EBS volumes to be created and configured in RAID0 mode.
-#<size> is the size in GB of each volume
-#<mountpoint> is the path for the mount in the local fs, e.g. /mnt or /data
-
-#For example:
-#setup_raid.py 10 2 /data
-#This will create 10 EBS volumes of 2GB each, format them using mdadm, and mount then in /data.
-
-#Detailed requirements:
-#- The script will be run on the machine where the mount is desired.
-#- The script will create the EBS volumes.
-#- The script will run the mdadm commands as described in the linked documentation.
-#- The script will format the volume
-#- The script will mount the volume
-#- The script will update /etc/fstab so that the volume persists on reboot
-#- Access to AWS is not provided by the employer. You must have your own account.
 import requests
 import boto3
 import sys
