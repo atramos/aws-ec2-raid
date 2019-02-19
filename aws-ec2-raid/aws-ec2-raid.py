@@ -12,6 +12,7 @@ import boto3
 import sys
 import time
 import subprocess
+import platform
 
 
 if len(sys.argv) == 4:
@@ -22,12 +23,25 @@ else:
 	print("Not playing fair: \n Ex: script.py <count> <size> <mountpoint>")
 	sys.exit(0)
 
+def linux_distribution():
+  try:
+    return platform.linux_distribution()
+  except:
+    return "N/A"
+
+
 def run_command(command):
     p = subprocess.Popen(command,
                          stdout=subprocess.PIPE,
                          stderr=subprocess.STDOUT)
     return iter(p.stdout.readline, b'')
 
+for line in linux_distribution():
+	if line == 'Ubuntu':
+		platform='ubuntu'
+	
+if platform != 'ubuntu' :
+	platform = 'amazon'
 
 r = requests.get("http://169.254.169.254/latest/dynamic/instance-identity/document")
 response_json = r.json()
@@ -60,17 +74,21 @@ else:
 		subprocess.check_output(comm2,stderr=subprocess.STDOUT)
 		#print('raid array exists Hurray')
 		#sys.exit(0)
-		existing_md=1
+		existing_md = 1
 	except subprocess.CalledProcessError as e:
-		#sys.exit(0)
-		existing_md=0
+		existing_md = 0
 		for x in range(num):
-			response = client.create_volume(AvailabilityZone=availability_zone,Size=int(size))
+			response = client.create_volume(AvailabilityZone=availability_zone,Size=int(size),VolumeType='gp2')
 		time.sleep(30)
 
 j=0
 
 alphabet='bcdefghijklmopqrstuvwxyz'
+if platform == 'ubuntu':
+	dev = '/dev/xvd'
+else:
+	dev = '/dev/sd'
+
 all_devices=""
 for vol in volumes:
 	if vol.state == 'in-use':
@@ -79,16 +97,15 @@ for vol in volumes:
 		if j < int(num_ebs):
 			print("Attaching volume with id " + vol.id + " to instance: "+ instance_id)
 			response = client.attach_volume(
-    				Device='/dev/sd'+alphabet[j],
+    				Device=dev+alphabet[j],
     				InstanceId=instance_id,
     				VolumeId=vol.id
 				)
-			all_devices=all_devices+'/dev/sd'+alphabet[j]+" "
+			all_devices=all_devices+ dev +alphabet[j]+" "
 		j+=1
 	elif vol.state == 'creating':
 		print("Some of the volumes are creating, you should wait a bit and restart this")
 
-#sudo mdadm --create --verbose /dev/md0 --level=0 --name=MY_RAID --raid-devices=number_of_volumes device_name1 device_name2
 time.sleep(30)
 if existing_md == 0:
 	print("Creating the RAID0 Array...Please wait...")
