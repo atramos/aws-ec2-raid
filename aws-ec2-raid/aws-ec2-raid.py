@@ -92,7 +92,7 @@ for vol in volumes:
 time.sleep(30)
 if existing_md == 0:
 	print("Creating the RAID0 Array...Please wait...")
-	command_user = ("/usr/sbin/mdadm --create --verbose /dev/md0 --level=0 --name=MY_RAID --raid-devices=" + num_ebs + " " + all_devices).split()
+	command_user = ("mdadm --create --verbose /dev/md0 --level=0 --name=MY_RAID --raid-devices=" + num_ebs + " " + all_devices).split()
 	subprocess.run(command_user)
 	time.sleep(30)
 	print("Creating filesystem of type XFS...")
