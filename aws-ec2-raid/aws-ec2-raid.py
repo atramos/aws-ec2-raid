@@ -101,12 +101,28 @@ for vol in volumes:
     				InstanceId=instance_id,
     				VolumeId=vol.id
 				)
+
+			response = client.modify_instance_attribute(
+				Attribute='blockDeviceMapping',
+				BlockDeviceMappings=[
+				{
+					'DeviceName': dev+alphabet[j],
+					'Ebs': {
+						'DeleteOnTermination': True,
+						'VolumeId': vol.id
+					},
+				},
+				],
+				InstanceId=instance_id
+				)
+
 			all_devices=all_devices+ dev +alphabet[j]+" "
 		j+=1
 	elif vol.state == 'creating':
 		print("Some of the volumes are creating, you should wait a bit and restart this")
 
 time.sleep(30)
+
 if existing_md == 0:
 	print("Creating the RAID0 Array...Please wait...")
 	command_user = ("mdadm --create --verbose /dev/md0 --level=0 --name=MY_RAID --raid-devices=" + num_ebs + " " + all_devices).split()
