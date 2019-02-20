@@ -13,7 +13,7 @@ import sys
 import time
 import subprocess
 import platform
-
+import json
 
 if len(sys.argv) == 4:
 	num_ebs=sys.argv[1]
@@ -119,7 +119,7 @@ if existing_md == 0:
 	except subprocess.CalledProcessError as e:
 		print("There is an error with formatting the volume")
 	
-comm=('mdadm --detail --scan').split()
+comm=('mdadm --examine --scan').split()
 for line in run_command(comm):
         with open('/etc/mdadm.conf', 'w') as fd:
                 fd.write(line.decode('utf-8'))
@@ -131,16 +131,22 @@ print("Mounting " + mountpoint + " and adding to FSTAB")
 comm_mount=("mount /dev/md0 " +mountpoint).split()
 subprocess.run(comm_mount)
 
+
+comm=("lsblk  /dev/md0 -J -o UUID").split()
+r = subprocess.check_output(comm)
+response_json = json.loads(r.decode('utf-8'))
+md_UUID='UUID='+response_json.get('blockdevices')[0].get('uuid')
+
 file = open('/etc/fstab','r')
 found=0
 for line in file:
-	if "md0" in line:
+	if md_UUID in line:
 		if mountpoint in line:
 			found = 1
 
 if found !=1:
         file2=open('/etc/fstab','a')
-        line_to_add = "/dev/md0	" + mountpoint + "       xfs     defaults,nofail 0       2\n"
+        line_to_add = md_UUID +"	" + mountpoint + "       xfs     defaults,nofail 0       2\n"
         file2.write(line_to_add)
         file2.close()
 
