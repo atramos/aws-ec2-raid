@@ -61,6 +61,7 @@ for vol in volumes:
 	if (vol.state == 'available' or vol.state == 'creating') and str(vol.size) == str(size):
 		num_free+=1
 
+existing_md = 0
 if num_free >= int(num_ebs):
 	print("Number of free volumes is equal to number of created ebs")
 	num = 0
@@ -72,22 +73,31 @@ else:
 	try:
 		comm2 = ("mdadm --detail /dev/md0").split()
 		subprocess.check_output(comm2,stderr=subprocess.STDOUT)
-		#print('raid array exists Hurray')
+		print('raid array exists Hurray')
 		#sys.exit(0)
 		existing_md = 1
 	except subprocess.CalledProcessError as e:
-		existing_md = 0
+		print('raid array not found')
 		for x in range(num):
 			response = client.create_volume(AvailabilityZone=availability_zone,Size=int(size),VolumeType='gp2')
 		time.sleep(30)
+		existing_md = 0
 
 j=0
 
 alphabet='bcdefghijklmopqrstuvwxyz'
 if platform == 'ubuntu':
 	dev = '/dev/xvd'
+	ssd_type='ssd'
 else:
 	dev = '/dev/sd'
+	ssd_type='ssd'
+
+comm=('parted --list').split()
+for line in run_command(comm):
+        if "Model: NVMe Device" in str(line):
+                ssd_type='nvme'
+
 
 all_devices=""
 for vol in volumes:
@@ -115,8 +125,10 @@ for vol in volumes:
 				],
 				InstanceId=instance_id
 				)
-
-			all_devices=all_devices+ dev +alphabet[j]+" "
+			if ssd_type=='ssd':
+				all_devices=all_devices+ dev +alphabet[j]+" "
+			else:
+				all_devices=all_devices+"/dev/nvme"+ str(j+1)+"n1"+" "
 		j+=1
 	elif vol.state == 'creating':
 		print("Some of the volumes are creating, you should wait a bit and restart this")
