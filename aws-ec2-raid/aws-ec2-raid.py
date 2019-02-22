@@ -78,7 +78,7 @@ if len(sys.argv) == 2:
 		delete_entry("/etc/mdadm/mdadm.conf","/dev/md0")	
 		sys.exit(0)
 	else:
-		print("Not playing fair: \n Only --cleanup is available")
+		print("ERROR: \n Only --cleanup is available")
 		sys.exit(0)
 
 if len(sys.argv) == 4:
@@ -86,7 +86,7 @@ if len(sys.argv) == 4:
 	size=sys.argv[2]
 	mountpoint=sys.argv[3]
 else:
-	print("Not playing fair: \n Ex: script.py <count> <size> <mountpoint>")
+	print("USAGE: \n Ex: script.py <count> <size> <mountpoint>")
 	sys.exit(0)
 
 def linux_distribution():
@@ -122,17 +122,17 @@ if num_free >= int(num_ebs):
 	num = 0
 #	break
 else: 
-	print("Verifying if raid array already exists. There may be one array only!")
+	print("Checking for existing raid array...")
 	#Create needed 
 	num = int(num_ebs) - num_free
 	try:
 		comm2 = ("mdadm --detail /dev/md0").split()
 		subprocess.check_output(comm2,stderr=subprocess.STDOUT)
-		print('raid array exists Hurray')
+		print('raid array exists')
 		sys.exit(0)
 		existing_md = 1
 	except subprocess.CalledProcessError as e:
-		print('raid array not found')
+		print('array not found, creating new volumes...')
 		for x in range(num):
 			response = client.create_volume(AvailabilityZone=availability_zone,Size=int(size),VolumeType='gp2')
 		time.sleep(30)
