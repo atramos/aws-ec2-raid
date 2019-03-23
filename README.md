@@ -1,12 +1,9 @@
 # aws-ec2-raid
-Simple RAID0 (disk striping, for speed) on AWS EC2 instances.
+Simple RAID0 (disk striping, for speed) on AWS EC2 instances. Get faster EBS for the same price as regular, slower EBS. The closest thing to a free lunch on AWS, outside of the free tier.
 
 # Status
 The status of this project is "unstable proof of concept". It worked fine once, but it breaks easily depending on what else
-is present in the environment.
-
-# Why?
-Get faster EBS for the same price as regular, slower EBS. The closest thing to a free lunch on AWS, outside of the free tier.
+is present in the environment. The attachment order of NVMe devices on boot is not guaranteed by AWS, and that really messes things up.
 
 # Usage
 Example: 8x 10GB RAID0 (80GB of capacity striped across 8 volumes)
