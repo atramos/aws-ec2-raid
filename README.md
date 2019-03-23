@@ -1,6 +1,10 @@
 # aws-ec2-raid
 Simple RAID0 (disk striping, for speed) on AWS EC2 instances.
 
+# Status
+The status of this project is "unstable proof of concept". It worked fine once, but it breaks easily depending on what else
+is present in the environment.
+
 # Why?
 Get faster EBS for the same price as regular, slower EBS. The closest thing to a free lunch on AWS, outside of the free tier.
 
