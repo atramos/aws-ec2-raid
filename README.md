@@ -7,12 +7,12 @@ was very disappointing, and it's not clear why.
 
 # Usage
 ```
-aws-ec2-raid.py <count> <size> <mountpoint>
+aws-ec2-raid.py COUNT SIZE MOUNTPOINT
 ```
 Where :
-<count> is the number of EBS volumes to be created and configured in RAID0 mode.
-<size> is the size in GB of each volume
-<mountpoint> is the path for the mount in the local fs, e.g. /mnt or /data
+COUNT is the number of EBS volumes to be created and configured in RAID0 mode.
+SIZE is the size in GB of each volume
+MOUNTPOINT is the path for the mount in the local fs, e.g. /mnt or /data
 
 Example:
 
