@@ -11,20 +11,20 @@ was very disappointing, and it's not clear why.
 ./free-volumes.sh | ./mount-volumes MOUNTPOINT
 ```
 Where :
-COUNT is the number of EBS volumes to be created and configured in RAID0 mode.
-SIZE is the size in GB of each volume
-MOUNTPOINT is the path for the mount in the local fs, e.g. /mnt or /data
+- COUNT is the number of EBS volumes to be created and configured in RAID0 mode.
+- SIZE is the size in GB of each volume
+- MOUNTPOINT is the path for the mount in the local fs, e.g. /mnt or /data
 
-Example:
+## Example
 
-8x 10GB RAID0 (80GB of capacity striped across 8 volumes)
+To setup an 8-volume 80GB RAID0 (striped across 8 volumes of 10GB each) from scratch in an Ubuntu Linux instance:
 ```
 git clone https://github.com/atramos/aws-ec2-raid 
 cd aws-ec2-raid
 sh install_pip3_boto3.txt
 mkdir /raid0
 ./create-volumes.py 10 8
-./free-volumes.sh | ./mount-volumes /mnt
+./free-volumes.sh | ./mount-volumes /raid0
 ```
 
 # Benchmarks
