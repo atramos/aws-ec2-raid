@@ -2,8 +2,8 @@
 Simple RAID0 (disk striping, for speed) on AWS EC2 instances. Get faster EBS for the same price as regular, slower EBS. The closest thing to a free lunch on AWS, outside of the free tier.
 
 # Status
-The status of this project is "unstable proof of concept". It worked fine once, but it breaks easily depending on what else
-is present in the environment. The attachment order of NVMe devices on boot is not guaranteed by AWS, and that really messes things up. The script needs to be cleaned up to use tags to identify the correct volumes to be mounted.
+The status of this project is "experimental proof of concept". It works ok mostly, but the measured performance improvement
+was very disappointing, and it's not clear why.
 
 # Usage
 Example: 8x 10GB RAID0 (80GB of capacity striped across 8 volumes)
