@@ -46,9 +46,10 @@ mkdir /raid0
 
 # How does it work?
 
-- The script runs on the machine where the mount is desired.
-- The script creates the EBS volumes using boto3 API.
-- The script runs the mdadm commands as described in the AWS documentation.
+- The script runs on the EC2 instance where array is going to be mounted
+- The script creates the EBS volumes using boto3 API
+- The script attaches the new volumes to the instance it's running on
+- The script runs the mdadm commands as described in the AWS documentation
 - The script formats the volume
 - The script mounts the volume
 - The script updates /etc/fstab so that the volume persists on reboot
