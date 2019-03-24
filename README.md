@@ -7,7 +7,8 @@ was very disappointing, and it's not clear why.
 
 # Usage
 ```
-aws-ec2-raid.py COUNT SIZE MOUNTPOINT
+./create-volumes.py COUNT SIZE 
+./free-volumes.sh | ./mount-volumes MOUNTPOINT
 ```
 Where :
 COUNT is the number of EBS volumes to be created and configured in RAID0 mode.
@@ -22,8 +23,8 @@ git clone https://github.com/atramos/aws-ec2-raid
 cd aws-ec2-raid
 sh install_pip3_boto3.txt
 mkdir /raid0
-python3 aws-ec2-raid.py 10 8 /raid0
-
+./create-volumes.py 10 8
+./free-volumes.sh | ./mount-volumes /mnt
 ```
 
 # Benchmarks
